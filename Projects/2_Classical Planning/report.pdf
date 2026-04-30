@@ -1,0 +1,155 @@
+%PDF-1.1
+1 0 obj
+<</Type /Catalog /Pages 2 0 R>>
+endobj
+2 0 obj
+<</Type /Pages /Kids [3 0 R] /Count 1>>
+endobj
+3 0 obj
+<</Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources <</Font <</F1 5 0 R>>>>>>
+endobj
+4 0 obj
+<</Length 5000>>
+stream
+BT
+/F1 10 Tf
+50 750 Td
+(Classical Planning Project Report) Tj
+0 -20 Td
+0 -6 Td
+(Executive Summary) Tj
+0 -16 Td
+0 -6 Td
+(This report presents an analysis of progression search algorithms comb) Tj
+0 -12 Td
+0 -6 Td
+(Implementation Overview) Tj
+0 -16 Td
+0 -6 Td
+(### Planning Graph Components) Tj
+0 -12 Td
+0 -6 Td
+(Successfully implemented the following functions in `my_planning_graph) Tj
+0 -12 Td
+0 -6 Td
+(1. **ActionLayer Methods:**) Tj
+0 -12 Td
+(   - `_inconsistent_effects\(\)`: Detects when two actions have contra) Tj
+0 -12 Td
+(   - `_interference\(\)`: Identifies when one action's effects negate ) Tj
+0 -12 Td
+(   - `_competing_needs\(\)`: Determines if action preconditions are mu) Tj
+0 -12 Td
+0 -6 Td
+(2. **LiteralLayer Methods:**) Tj
+0 -12 Td
+(   - `_inconsistent_support\(\)`: Detects when literals cannot be simu) Tj
+0 -12 Td
+(   - `_negation\(\)`: Identifies logical negation relationships betwee) Tj
+0 -12 Td
+0 -6 Td
+(3. **Heuristic Functions:**) Tj
+0 -12 Td
+(   - `h_levelsum\(\)`: Sums level costs of individual goals) Tj
+0 -12 Td
+(   - `h_maxlevel\(\)`: Maximum level cost among all goals) Tj
+0 -12 Td
+(   - `h_setlevel\(\)`: First level where all goals appear without mutu) Tj
+0 -12 Td
+0 -6 Td
+(### Key Implementation Features) Tj
+0 -12 Td
+0 -6 Td
+(- Incremental planning graph construction rather than full expansion) Tj
+0 -12 Td
+(- Efficient mutex detection and maintenance) Tj
+0 -12 Td
+(- Proper handling of Python 3.13 collections.abc compatibility) Tj
+0 -12 Td
+0 -6 Td
+(**All 35 unit tests pass successfully.**) Tj
+0 -12 Td
+0 -6 Td
+(Experimental Setup) Tj
+0 -16 Td
+0 -6 Td
+(### Problems Evaluated) Tj
+0 -12 Td
+0 -6 Td
+(- **Problem 1**: 2 airplanes, 2 cargo items, 2 airports → 20 domain ac) Tj
+0 -12 Td
+(- **Problem 2**: 3 airplanes, 3 cargo items, 3 airports → 72 domain ac) Tj
+0 -12 Td
+0 -6 Td
+(### Search Algorithms Tested) Tj
+0 -12 Td
+0 -6 Td
+(**Uninformed Search \(No Heuristic\):**) Tj
+0 -12 Td
+(1. Breadth-First Search \(BFS\)) Tj
+0 -12 Td
+(2. Depth-First Graph Search \(DFS\)) Tj
+0 -12 Td
+(3. Uniform Cost Search \(UCS\)) Tj
+0 -12 Td
+0 -6 Td
+(**Informed Search:**) Tj
+0 -12 Td
+(4. Greedy Best-First Search with h_unmet_goals) Tj
+0 -12 Td
+(5. Greedy Best-First Search with h_pg_levelsum) Tj
+0 -12 Td
+(6. Greedy Best-First Search with h_pg_maxlevel) Tj
+0 -12 Td
+(7. Greedy Best-First Search with h_pg_setlevel \(Problem 1 only\)) Tj
+0 -12 Td
+(8. A* Search with various heuristics \(Note: Planning graph heuristics) Tj
+0 -12 Td
+0 -6 Td
+(Experimental Results) Tj
+0 -16 Td
+0 -6 Td
+(### Problem 1 \(20 actions\)) Tj
+0 -12 Td
+0 -6 Td
+(| Algorithm | Expansions | Plan Length | Time \(s\) |) Tj
+0 -12 Td
+(|-----------|-----------|------------|----------|) Tj
+0 -12 Td
+(| Breadth-First Search | 43 | 6 | 0.0022 |) Tj
+0 -12 Td
+(| Depth-First Graph Search | 21 | 20 | 0.0012 |) Tj
+0 -12 Td
+(| Uniform Cost Search | 60 | 6 | 0.0034 |) Tj
+0 -12 Td
+(| Greedy BFS \(h_unmet_goals\) | 7 | 6 | 0.0006 |) Tj
+0 -12 Td
+(| Greedy BFS \(h_pg_levelsum\) | 6 | 6 | 0.0885 |) Tj
+0 -12 Td
+(| Greedy BFS \(h_pg_maxlevel\) | 6 | 6 | 0.0578 |) Tj
+0 -12 Td
+0 -6 Td
+(**Key Observations:**) Tj
+0 -12 Td
+ET
+endstream
+endobj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Font /Subtype /Type1 /BaseFont /Helvetica>>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000262 00000 n 
+0000005360 00000 n 
+trailer
+<</Size 6 /Root 1 0 R>>
+startxref
+5460
+%%EOF
