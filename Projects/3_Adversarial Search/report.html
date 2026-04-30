@@ -87,37 +87,27 @@ favorable opening moves.</p>
 </ul>
 <h2 id="analysis">Analysis</h2>
 <h3 id="advanced-heuristic-questions">Advanced Heuristic Questions</h3>
-<ul>
-<li>Features included: liberty advantage, centrality, and board
-openness.</li>
-<li>These features matter because:
-<ul>
-<li>liberty advantage directly relates to survival and winning
-potential;</li>
-<li>centrality improves future mobility for knight moves;</li>
-<li>board openness preserves options and reduces the risk of losing by
-confinement.</li>
-</ul></li>
-</ul>
-<h3 id="search-depth-and-tradeoffs">Search Depth and Tradeoffs</h3>
-<ul>
-<li>Iterative deepening lets the agent search to successively higher
-depths until the 150ms limit.</li>
-<li>In practice, the agent generally reaches a depth of around 3 to 4
-plies depending on board complexity.</li>
-<li>Search speed is important because the agent must return a move on
-time, but accuracy is also important because a stronger heuristic
-enables better pruning and move ordering.</li>
-<li>Alpha-beta pruning balances both: it allows deeper search while
-preserving the quality of the chosen move.</li>
-</ul>
-<h2 id="validation">Validation</h2>
-<p>All required tests in <code>tests/test_my_custom_player.py</code>
-passed: - <code>test_get_action_player1</code> -
-<code>test_get_action_player2</code> -
-<code>test_get_action_midgame</code> -
-<code>test_get_action_terminal</code> -
-<code>test_custom_player</code></p>
+<p><strong>Question 1: What features of the game does your heuristic
+incorporate, and why do you think those features matter in evaluating
+states during search?</strong><br />
+The heuristic incorporates liberty advantage (own liberties minus
+opponent liberties), centrality (preference for board center positions),
+and board openness (ratio of remaining open cells). These features
+matter because liberty advantage directly measures immediate survival
+potential and winning likelihood, centrality improves long-term mobility
+by avoiding edge traps where knight moves are constrained, and board
+openness encourages flexible play that reduces the risk of
+self-entrapment and preserves strategic options throughout the game.</p>
+<p><strong>Question 2: Analyze the search depth your agent achieves
+using your custom heuristic. Does search speed matter more or less than
+accuracy to the performance of your heuristic?</strong><br />
+Using iterative deepening, the agent typically achieves a search depth
+of 3 to 4 plies within the 150ms time limit, depending on board
+complexity and available moves. Search speed is equally important as
+accuracy in this implementation—while accuracy enables better move
+selection through stronger heuristic evaluation and alpha-beta pruning,
+speed ensures the agent always returns a valid move before timeout,
+balancing tactical depth with practical responsiveness.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>The agent uses a custom heuristic that combines mobility, centrality,
 and board openness. Experimental results show the approach is effective

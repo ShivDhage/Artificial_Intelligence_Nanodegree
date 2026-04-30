@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This report documents the implementation and evaluation of a knights Isolation agent in `my_custom_player.py`. The chosen approach is the advanced heuristic option, comparing a new evaluation function against sample baseline agents.
+This report documents the implementation and evaluation of a knights Isolation agent in `my_custom_player.py`. My chosen approach is the advanced heuristic option, comparing a new evaluation function against sample baseline agents.
 
 ## Implementation
 
@@ -55,26 +55,11 @@ The baseline is the sample Greedy agent, whose behavior is based on immediate bo
 ## Analysis
 
 ### Advanced Heuristic Questions
-- Features included: liberty advantage, centrality, and board openness.
-- These features matter because:
-  - liberty advantage directly relates to survival and winning potential;
-  - centrality improves future mobility for knight moves;
-  - board openness preserves options and reduces the risk of losing by confinement.
+**Question 1: What features of the game does your heuristic incorporate, and why do you think those features matter in evaluating states during search?**  
+The heuristic incorporates liberty advantage (own liberties minus opponent liberties), centrality (preference for board center positions), and board openness (ratio of remaining open cells). These features matter because liberty advantage directly measures immediate survival potential and winning likelihood, centrality improves long-term mobility by avoiding edge traps where knight moves are constrained, and board openness encourages flexible play that reduces the risk of self-entrapment and preserves strategic options throughout the game.
 
-### Search Depth and Tradeoffs
-- Iterative deepening lets the agent search to successively higher depths until the 150ms limit.
-- In practice, the agent generally reaches a depth of around 3 to 4 plies depending on board complexity.
-- Search speed is important because the agent must return a move on time, but accuracy is also important because a stronger heuristic enables better pruning and move ordering.
-- Alpha-beta pruning balances both: it allows deeper search while preserving the quality of the chosen move.
-
-## Validation
-
-All required tests in `tests/test_my_custom_player.py` passed:
-- `test_get_action_player1`
-- `test_get_action_player2`
-- `test_get_action_midgame`
-- `test_get_action_terminal`
-- `test_custom_player`
+**Question 2: Analyze the search depth your agent achieves using your custom heuristic. Does search speed matter more or less than accuracy to the performance of your heuristic?**  
+Using iterative deepening, the agent typically achieves a search depth of 3 to 4 plies within the 150ms time limit, depending on board complexity and available moves. Search speed is equally important as accuracy in this implementation—while accuracy enables better move selection through stronger heuristic evaluation and alpha-beta pruning, speed ensures the agent always returns a valid move before timeout, balancing tactical depth with practical responsiveness.
 
 ## Conclusion
 The agent uses a custom heuristic that combines mobility, centrality, and board openness. Experimental results show the approach is effective against the sample Greedy baseline and competitive against the sample Minimax agent.
