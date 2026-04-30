@@ -1,0 +1,125 @@
+<h1 id="adversarial-search-project-report">Adversarial Search Project
+Report</h1>
+<h2 id="project-overview">Project Overview</h2>
+<p>This report documents the implementation and evaluation of a knights
+Isolation agent in <code>my_custom_player.py</code>. The chosen approach
+is the advanced heuristic option, comparing a new evaluation function
+against sample baseline agents.</p>
+<h2 id="implementation">Implementation</h2>
+<h3 id="agent-design">Agent Design</h3>
+<ul>
+<li><code>CustomPlayer</code> inherits from
+<code>DataPlayer</code>.</li>
+<li>Uses <strong>minimax search</strong> with <strong>alpha-beta
+pruning</strong>.</li>
+<li>Uses <strong>iterative deepening</strong> to produce the best
+available move within the 150ms limit.</li>
+<li>Ensures a legal move is always queued before timeout.</li>
+</ul>
+<h3 id="custom-heuristic">Custom Heuristic</h3>
+<p>The heuristic is custom and goes beyond the lecture mobility
+heuristic.</p>
+<ol type="1">
+<li><strong>Liberty advantage</strong>
+<ul>
+<li><code>len(own_liberties) - len(opp_liberties)</code></li>
+<li>This factor captures the relative mobility of the agent compared to
+the opponent.</li>
+<li>It is critical because the player with more moves is less likely to
+become trapped.</li>
+</ul></li>
+<li><strong>Centrality</strong>
+<ul>
+<li>Prefers moves closer to the center of the board.</li>
+<li>Central positions allow knights to reach more future squares than
+edge positions.</li>
+</ul></li>
+<li><strong>Board openness</strong>
+<ul>
+<li>Uses the number of remaining open cells.</li>
+<li>Encourages maintaining flexibility and reduces the risk of early
+self-entrapment.</li>
+</ul></li>
+</ol>
+<h3 id="combined-score">Combined Score</h3>
+<p>The heuristic score is: - <code>10.0 * liberty_advantage</code> -
+<code>+ 1.0 * centrality_score</code> -
+<code>+ 0.1 * openness_score</code></p>
+<p>This weighting emphasizes mobility while using centrality and
+openness to refine state evaluation.</p>
+<h2 id="experiments-and-results">Experiments and Results</h2>
+<h3 id="baseline-selection">Baseline Selection</h3>
+<p>The baseline is the sample Greedy agent, whose behavior is based on
+immediate board mobility. Fair matches were used to reduce the impact of
+favorable opening moves.</p>
+<h3 id="results">Results</h3>
+<table>
+<thead>
+<tr>
+<th>Opponent</th>
+<th style="text-align: right;">Rounds</th>
+<th style="text-align: right;">Games</th>
+<th style="text-align: center;">Fair Matches</th>
+<th style="text-align: right;">Win Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Greedy Agent</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: right;">100%</td>
+</tr>
+<tr>
+<td>Minimax Agent</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: right;">80%</td>
+</tr>
+</tbody>
+</table>
+<h3 id="match-setup">Match Setup</h3>
+<ul>
+<li>Greedy baseline: <code>run_match.py -r 10 -o GREEDY -f</code></li>
+<li>Minimax comparison: <code>run_match.py -r 5 -o MINIMAX</code></li>
+</ul>
+<h2 id="analysis">Analysis</h2>
+<h3 id="advanced-heuristic-questions">Advanced Heuristic Questions</h3>
+<ul>
+<li>Features included: liberty advantage, centrality, and board
+openness.</li>
+<li>These features matter because:
+<ul>
+<li>liberty advantage directly relates to survival and winning
+potential;</li>
+<li>centrality improves future mobility for knight moves;</li>
+<li>board openness preserves options and reduces the risk of losing by
+confinement.</li>
+</ul></li>
+</ul>
+<h3 id="search-depth-and-tradeoffs">Search Depth and Tradeoffs</h3>
+<ul>
+<li>Iterative deepening lets the agent search to successively higher
+depths until the 150ms limit.</li>
+<li>In practice, the agent generally reaches a depth of around 3 to 4
+plies depending on board complexity.</li>
+<li>Search speed is important because the agent must return a move on
+time, but accuracy is also important because a stronger heuristic
+enables better pruning and move ordering.</li>
+<li>Alpha-beta pruning balances both: it allows deeper search while
+preserving the quality of the chosen move.</li>
+</ul>
+<h2 id="validation">Validation</h2>
+<p>All required tests in <code>tests/test_my_custom_player.py</code>
+passed: - <code>test_get_action_player1</code> -
+<code>test_get_action_player2</code> -
+<code>test_get_action_midgame</code> -
+<code>test_get_action_terminal</code> -
+<code>test_custom_player</code></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The agent uses a custom heuristic that combines mobility, centrality,
+and board openness. Experimental results show the approach is effective
+against the sample Greedy baseline and competitive against the sample
+Minimax agent.</p>
