@@ -1,5 +1,12 @@
 
 from itertools import chain, combinations
+import collections as _collections
+
+# Compatibility shim for Python 3.13+: layers.py imports MutableSet from collections
+if not hasattr(_collections, 'MutableSet'):
+    from collections.abc import MutableSet
+    _collections.MutableSet = MutableSet
+
 from aimacode.planning import Action
 from aimacode.utils import expr
 
