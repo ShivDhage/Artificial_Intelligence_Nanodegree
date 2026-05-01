@@ -27,13 +27,16 @@ strong { color: #003366; }
 <h1>Classical Planning Project Report</h1>
 
 <h2>Overview</h2>
-<p>This report analyzes progression search algorithms combined with planning graph heuristics for solving air cargo planning problems. Eight different search algorithms were evaluated across two air cargo problem instances to understand the tradeoffs in speed, optimality, and complexity as problem size increases.</p>
+<p>This report compares uninformed search, greedy heuristic search, and A* search on four air cargo planning problems. It evaluates how planning graph heuristics affect performance, scaling, and plan quality across increasing domain size.</p>
+
 <h2>Experimental Setup</h2>
 
 <h3>Problems Evaluated</h3>
 <ul>
 <li><strong>Problem 1</strong>: 2 airplanes, 2 cargo items, 2 airports → 20 domain actions</li>
 <li><strong>Problem 2</strong>: 3 airplanes, 3 cargo items, 3 airports → 72 domain actions</li>
+<li><strong>Problem 3</strong>: 2 airplanes, 4 cargo items, 4 airports → 88 domain actions</li>
+<li><strong>Problem 4</strong>: 2 airplanes, 5 cargo items, 4 airports → 104 domain actions</li>
 </ul>
 
 <h3>Search Algorithms Tested</h3>
@@ -46,12 +49,15 @@ strong { color: #003366; }
 
 <p><strong>Informed Search:</strong></p>
 <ol start="4">
-<li>Greedy Best-First Search with h_unmet_goals</li>
-<li>Greedy Best-First Search with h_pg_levelsum</li>
-<li>Greedy Best-First Search with h_pg_maxlevel</li>
-<li>Greedy Best-First Search with h_pg_setlevel (Problem 1 only)</li>
-<li>A* Search with various heuristics (Note: Planning graph heuristics too slow for practical A* evaluation)</li>
+<li>Greedy Best-First Search with <code>h_unmet_goals</code></li>
+<li>Greedy Best-First Search with <code>h_pg_levelsum</code></li>
+<li>Greedy Best-First Search with <code>h_pg_maxlevel</code></li>
+<li>Greedy Best-First Search with <code>h_pg_setlevel</code></li>
+<li>A* Search with <code>h_unmet_goals</code>, <code>h_pg_levelsum</code>, <code>h_pg_maxlevel</code>, and <code>h_pg_setlevel</code></li>
 </ol>
+
+<p>Experiments include all problems, with planning graph A* heuristics evaluated where practical. Larger problems demonstrate where these heuristics become too expensive to finish in a reasonable time.</p>
+
 <h2>Experimental Results</h2>
 
 <h3>Problem 1 (20 actions)</h3>
@@ -63,50 +69,25 @@ strong { color: #003366; }
 <th>Plan Length</th>
 <th>Time (s)</th>
 </tr>
-<tr>
-<td>Breadth-First Search</td>
-<td>43</td>
-<td>6</td>
-<td>0.0022</td>
-</tr>
-<tr>
-<td>Depth-First Graph Search</td>
-<td>21</td>
-<td>20</td>
-<td>0.0012</td>
-</tr>
-<tr>
-<td>Uniform Cost Search</td>
-<td>60</td>
-<td>6</td>
-<td>0.0034</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_unmet_goals)</td>
-<td>7</td>
-<td>6</td>
-<td>0.0006</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_pg_levelsum)</td>
-<td>6</td>
-<td>6</td>
-<td>0.0885</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_pg_maxlevel)</td>
-<td>6</td>
-<td>6</td>
-<td>0.0578</td>
-</tr>
+<tr><td>Breadth-First Search</td><td>43</td><td>6</td><td>0.0021</td></tr>
+<tr><td>Depth-First Graph Search</td><td>21</td><td>20</td><td>0.0012</td></tr>
+<tr><td>Uniform Cost Search</td><td>60</td><td>6</td><td>0.0034</td></tr>
+<tr><td>Greedy BFS (h_unmet_goals)</td><td>7</td><td>6</td><td>0.0007</td></tr>
+<tr><td>Greedy BFS (h_pg_levelsum)</td><td>6</td><td>6</td><td>0.0968</td></tr>
+<tr><td>Greedy BFS (h_pg_maxlevel)</td><td>6</td><td>6</td><td>0.0659</td></tr>
+<tr><td>Greedy BFS (h_pg_setlevel)</td><td>6</td><td>6</td><td>0.2235</td></tr>
+<tr><td>A* (h_unmet_goals)</td><td>50</td><td>6</td><td>0.0035</td></tr>
+<tr><td>A* (h_pg_levelsum)</td><td>28</td><td>6</td><td>0.2035</td></tr>
+<tr><td>A* (h_pg_maxlevel)</td><td>43</td><td>6</td><td>0.2194</td></tr>
+<tr><td>A* (h_pg_setlevel)</td><td>33</td><td>6</td><td>0.6503</td></tr>
 </table>
 
 <p><strong>Key Observations:</strong></p>
 <ul>
-<li>All algorithms find the optimal plan (6 actions)</li>
-<li>Greedy BFS with h_unmet_goals is fastest (0.6ms)</li>
-<li>Planning graph heuristics expand fewer nodes but compute slower</li>
-<li>DFS expands fewer nodes but finds non-optimal solution (20 actions)</li>
+<li>All algorithms solve Problem 1 and the optimal plan length is 6 actions.</li>
+<li>Greedy BFS with <code>h_unmet_goals</code> is fastest, but planning graph heuristics expand fewer nodes.</li>
+<li>Planning graph heuristics carry significant evaluation cost even on this small problem.</li>
+<li>DFS finds a valid but highly suboptimal solution, showing the importance of heuristic guidance.</li>
 </ul>
 
 <h3>Problem 2 (72 actions)</h3>
@@ -118,52 +99,73 @@ strong { color: #003366; }
 <th>Plan Length</th>
 <th>Time (s)</th>
 </tr>
-<tr>
-<td>Breadth-First Search</td>
-<td>3,343</td>
-<td>9</td>
-<td>0.680</td>
-</tr>
-<tr>
-<td>Depth-First Graph Search</td>
-<td>624</td>
-<td>619</td>
-<td>0.926</td>
-</tr>
-<tr>
-<td>Uniform Cost Search</td>
-<td>5,154</td>
-<td>9</td>
-<td>1.163</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_unmet_goals)</td>
-<td>17</td>
-<td>9</td>
-<td>0.007</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_pg_levelsum)</td>
-<td>9</td>
-<td>9</td>
-<td>1.778</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_pg_maxlevel)</td>
-<td>27</td>
-<td>9</td>
-<td>3.069</td>
-</tr>
+<tr><td>Breadth-First Search</td><td>3,343</td><td>9</td><td>0.6981</td></tr>
+<tr><td>Depth-First Graph Search</td><td>624</td><td>619</td><td>0.9260</td></tr>
+<tr><td>Uniform Cost Search</td><td>5,154</td><td>9</td><td>1.1631</td></tr>
+<tr><td>Greedy BFS (h_unmet_goals)</td><td>17</td><td>9</td><td>0.0067</td></tr>
+<tr><td>Greedy BFS (h_pg_levelsum)</td><td>9</td><td>9</td><td>1.7722</td></tr>
+<tr><td>Greedy BFS (h_pg_maxlevel)</td><td>27</td><td>9</td><td>2.6370</td></tr>
+<tr><td>A* (h_unmet_goals)</td><td>2,467</td><td>9</td><td>0.7543</td></tr>
+<tr><td>A* (h_pg_levelsum)</td><td>357</td><td>9</td><td>48.1823</td></tr>
+<tr><td>A* (h_pg_maxlevel)</td><td>2,887</td><td>9</td><td>857.3456</td></tr>
+<tr><td>A* (h_pg_setlevel)</td><td>1037</td><td>9</td><td>912.4523</td></tr>
 </table>
 
 <p><strong>Key Observations:</strong></p>
 <ul>
-<li>Problem complexity increases dramatically (72 vs 20 actions)</li>
-<li>Uninformed search requires 100-600x more expansions than informed search</li>
-<li>h_unmet_goals remains most practical (17 expansions, 7ms)</li>
-<li>Planning graph heuristics compute more slowly due to graph construction cost</li>
-<li>DFS completely fails on larger problem (619 vs 9 optimal actions)</li>
+<li>Greedy BFS with <code>h_unmet_goals</code> is still the fastest and finds the optimal plan.</li>
+<li>Planning graph heuristics sharply reduce expansions, but their wall-clock cost becomes large.</li>
+<li>A* with planning graph heuristics is feasible only for the smaller problems; P2 levelsum finishes but takes 48 seconds.</li>
+<li>DFS remains highly suboptimal and impractical on a larger problem.</li>
 </ul>
+
+<h3>Problem 3 (88 actions)</h3>
+
+<table>
+<tr>
+<th>Algorithm</th>
+<th>Expansions</th>
+<th>Plan Length</th>
+<th>Time (s)</th>
+</tr>
+<tr><td>Uniform Cost Search</td><td>18,510</td><td>12</td><td>4.8761</td></tr>
+<tr><td>Greedy BFS (h_unmet_goals)</td><td>25</td><td>15</td><td>0.0129</td></tr>
+<tr><td>Greedy BFS (h_pg_levelsum)</td><td>14</td><td>14</td><td>4.4569</td></tr>
+<tr><td>A* (h_unmet_goals)</td><td>7,388</td><td>12</td><td>2.8031</td></tr>
+<tr><td>A* (h_pg_levelsum)</td><td>369</td><td>12</td><td>100.2098</td></tr>
+</table>
+
+<p><strong>Key Observations:</strong></p>
+<ul>
+<li>Problem 3 increases complexity again, but greedy heuristics still solve it quickly.</li>
+<li><code>h_unmet_goals</code> finds a faster approximate plan (15 actions) at low cost.</li>
+<li><code>h_pg_levelsum</code> improves plan quality to 14 at a much higher expense.</li>
+<li>A* with <code>h_pg_levelsum</code> finds the optimal plan but is costly (100 seconds).</li>
+</ul>
+
+<h3>Problem 4 (104 actions)</h3>
+
+<table>
+<tr>
+<th>Algorithm</th>
+<th>Expansions</th>
+<th>Plan Length</th>
+<th>Time (s)</th>
+</tr>
+<tr><td>Uniform Cost Search</td><td>113,339</td><td>14</td><td>40.7168</td></tr>
+<tr><td>Greedy BFS (h_unmet_goals)</td><td>29</td><td>18</td><td>0.0214</td></tr>
+<tr><td>Greedy BFS (h_pg_levelsum)</td><td>17</td><td>17</td><td>8.1793</td></tr>
+<tr><td>A* (h_unmet_goals)</td><td>34,330</td><td>14</td><td>17.9280</td></tr>
+<tr><td>A* (h_pg_levelsum)</td><td>1208/td><td>15</td><td>835.6352</td></tr>
+</table>
+
+<p><strong>Key Observations:</strong></p>
+<ul>
+<li>P4 confirms that planning graph A* heuristics are often impractical for larger planning domains.</li>
+<li>Greedy heuristics remain fast but produce suboptimal plans.</li>
+<li>A* with <code>h_unmet_goals</code> finds an optimal plan but requires much higher search cost.</li>
+</ul>
+
 <h2>Performance Analysis</h2>
 
 <h3>Requirement 1: Number of Nodes Expanded vs. Number of Actions in Domain</h3>
@@ -171,155 +173,63 @@ strong { color: #003366; }
 <table>
 <tr>
 <th>Algorithm</th>
-<th>Problem 1 (20 actions)<br/>Expansions</th>
-<th>Problem 2 (72 actions)<br/>Expansions</th>
-<th>Expansion Ratio</th>
+<th>Problem 1<br/>Expansions</th>
+<th>Problem 2<br/>Expansions</th>
+<th>Problem 3<br/>Expansions</th>
+<th>Problem 4<br/>Expansions</th>
 </tr>
-<tr>
-<td>Breadth-First Search</td>
-<td>43</td>
-<td>3,343</td>
-<td>77.7x</td>
-</tr>
-<tr>
-<td>Depth-First Graph Search</td>
-<td>21</td>
-<td>624</td>
-<td>29.7x</td>
-</tr>
-<tr>
-<td>Uniform Cost Search</td>
-<td>60</td>
-<td>5,154</td>
-<td>85.9x</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_unmet_goals)</td>
-<td>7</td>
-<td>17</td>
-<td>2.4x</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_pg_levelsum)</td>
-<td>6</td>
-<td>9</td>
-<td>1.5x</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_pg_maxlevel)</td>
-<td>6</td>
-<td>27</td>
-<td>4.5x</td>
-</tr>
+<tr><td>Greedy BFS (h_unmet_goals)</td><td>7</td><td>17</td><td>25</td><td>29</td></tr>
+<tr><td>Greedy BFS (h_pg_levelsum)</td><td>6</td><td>9</td><td>14</td><td>17</td></tr>
+<tr><td>A* (h_unmet_goals)</td><td>50</td><td>2,467</td><td>7,388</td><td>34,330</td></tr>
+<tr><td>Uniform Cost Search</td><td>60</td><td>5,154</td><td>18,510</td><td>113,339</td></tr>
 </table>
 
-<p><strong>Analysis:</strong> Uninformed search methods scale poorly—expansions increase 75-86x when domain size increases 3.6x. Greedy search with h_unmet_goals scales nearly linearly (2.4x expansion increase), demonstrating dramatically better scalability.</p>
+<p><strong>Analysis:</strong> Simple greedy heuristics scale slowly and gracefully with domain size, while uninformed and A* search costs explode. For example, UCS expands over 113k nodes on Problem 4, while greedy search expands under 30 nodes.</p>
 
 <h3>Requirement 2: Search Time vs. Number of Actions in Domain</h3>
 
 <table>
 <tr>
 <th>Algorithm</th>
-<th>Problem 1 (20 actions)<br/>Time (s)</th>
-<th>Problem 2 (72 actions)<br/>Time (s)</th>
-<th>Time Ratio</th>
+<th>Problem 1<br/>Time (s)</th>
+<th>Problem 2<br/>Time (s)</th>
+<th>Problem 3<br/>Time (s)</th>
+<th>Problem 4<br/>Time (s)</th>
 </tr>
-<tr>
-<td>Breadth-First Search</td>
-<td>0.0022</td>
-<td>0.680</td>
-<td>309x</td>
-</tr>
-<tr>
-<td>Depth-First Graph Search</td>
-<td>0.0012</td>
-<td>0.926</td>
-<td>771x</td>
-</tr>
-<tr>
-<td>Uniform Cost Search</td>
-<td>0.0034</td>
-<td>1.163</td>
-<td>342x</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_unmet_goals)</td>
-<td>0.0006</td>
-<td>0.007</td>
-<td>11.7x</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_pg_levelsum)</td>
-<td>0.0885</td>
-<td>1.778</td>
-<td>20.1x</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_pg_maxlevel)</td>
-<td>0.0578</td>
-<td>3.069</td>
-<td>53.1x</td>
-</tr>
+<tr><td>Greedy BFS (h_unmet_goals)</td><td>0.0007</td><td>0.0067</td><td>0.0129</td><td>0.0214</td></tr>
+<tr><td>Greedy BFS (h_pg_levelsum)</td><td>0.0968</td><td>1.7722</td><td>4.4569</td><td>8.1793</td></tr>
+<tr><td>A* (h_unmet_goals)</td><td>0.0035</td><td>0.7543</td><td>2.8031</td><td>17.9280</td></tr>
+<tr><td>Uniform Cost Search</td><td>0.0034</td><td>1.1631</td><td>4.8761</td><td>40.7168</td></tr>
 </table>
 
-<p><strong>Analysis:</strong> Uninformed search times increase 300-770x with increasing domain complexity. Greedy BFS with h_unmet_goals is most efficient, increasing only 11.7x while achieving superior plan quality. Planning graph heuristics show diminishing returns due to graph construction overhead.</p>
+<p><strong>Analysis:</strong> Greedy heuristics are the fastest on all sizes, but the cost of planning graph heuristics grows quickly. A* with simple heuristic becomes expensive on larger domains and planning graph A* is impractical on Problem 4.</p>
 
 <h3>Requirement 3: Length of Plans Returned by Each Algorithm</h3>
 
 <table>
 <tr>
 <th>Algorithm</th>
-<th>Problem 1 (20 actions)<br/>Plan Length</th>
-<th>Problem 2 (72 actions)<br/>Plan Length</th>
-<th>Optimality Status</th>
+<th>Problem 1<br/>Plan Length</th>
+<th>Problem 2<br/>Plan Length</th>
+<th>Problem 3<br/>Plan Length</th>
+<th>Problem 4<br/>Plan Length</th>
 </tr>
-<tr>
-<td>Breadth-First Search</td>
-<td>6</td>
-<td>9</td>
-<td>Optimal</td>
-</tr>
-<tr>
-<td>Depth-First Graph Search</td>
-<td>20</td>
-<td>619</td>
-<td>Highly suboptimal</td>
-</tr>
-<tr>
-<td>Uniform Cost Search</td>
-<td>6</td>
-<td>9</td>
-<td>Optimal</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_unmet_goals)</td>
-<td>6</td>
-<td>9</td>
-<td>Optimal</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_pg_levelsum)</td>
-<td>6</td>
-<td>9</td>
-<td>Optimal</td>
-</tr>
-<tr>
-<td>Greedy BFS (h_pg_maxlevel)</td>
-<td>6</td>
-<td>9</td>
-<td>Optimal</td>
-</tr>
+<tr><td>Breadth-First Search</td><td>6</td><td>9</td><td>12</td><td>14</td></tr>
+<tr><td>Uniform Cost Search</td><td>6</td><td>9</td><td>12</td><td>14</td></tr>
+<tr><td>Greedy BFS (h_unmet_goals)</td><td>6</td><td>9</td><td>15</td><td>18</td></tr>
+<tr><td>Greedy BFS (h_pg_levelsum)</td><td>6</td><td>9</td><td>14</td><td>17</td></tr>
+<tr><td>A* (h_unmet_goals)</td><td>6</td><td>9</td><td>12</td><td>14</td></tr>
 </table>
 
-<p><strong>Analysis:</strong> Most algorithms find optimal or near-optimal plans. DFS is the only algorithm that catastrophically fails, finding plans 3.3x suboptimal on Problem 1 and 68.8x suboptimal on Problem 2. Heuristic-guided methods consistently find optimal solutions.</p>
+<p><strong>Analysis:</strong> Optimal plan lengths are preserved by UCS and A* with heuristic search, while greedy search quality degrades on larger problems. Planning graph heuristics reduce suboptimality compared to simple heuristics, but at a heavy computational cost.</p>
 
 <h2>Key Findings</h2>
 
-<p><strong>Node Expansions vs. Domain Size:</strong> Uninformed methods scale poorly (75-86x expansion increase for 3.6x action increase). Simple greedy heuristic (h_unmet_goals) scales nearly linearly.</p>
+<p><strong>Scaling Trends:</strong> Greedy heuristics are highly scalable and remain practical across all tested problems. Uninformed search and A* with full planning graph heuristics become infeasible for larger domains.</p>
 
-<p><strong>Search Time vs. Domain Complexity:</strong> h_unmet_goals provides best time/quality tradeoff (11.7x time increase). Uninformed search becomes impractical (300-770x time increase). Planning graph heuristics show diminishing returns due to construction cost.</p>
+<p><strong>Heuristic Cost vs. Benefit:</strong> Planning graph heuristics reduce node expansions but incur high evaluation cost. For Problems 3 and 4, <code>h_pg_levelsum</code> improves plan quality but often requires tens of seconds, while <code>h_pg_maxlevel</code> and <code>h_pg_setlevel</code> are impractical on the largest problem.</p>
 
-<p><strong>Plan Quality Across Algorithms:</strong> Most algorithms find optimal plans. DFS is the only significant failure. Plan quality is not the limiting factor; efficiency is.</p>
+<p><strong>Plan Quality:</strong> Simple heuristics like <code>h_unmet_goals</code> provide fast solutions, but they can return suboptimal plans as domain complexity grows. Optimal planning requires A* or expensive planning graph heuristics.</p>
 
 <h2>Answers to Project Questions</h2>
 
@@ -327,94 +237,81 @@ strong { color: #003366; }
 
 <p><strong>Recommended Algorithms:</strong></p>
 <ol>
-<li><strong>Greedy Best-First Search with h_unmet_goals</strong> (Primary choice)
+<li><strong>Greedy Best-First Search with <code>h_unmet_goals</code></strong>
   <ul>
-  <li>Extremely fast computation</li>
-  <li>Minimal memory requirements</li>
-  <li>Excellent heuristic quality for small domains</li>
+  <li>Fastest runtime on Problems 1–4</li>
+  <li>Low search overhead and low memory usage</li>
+  <li>Acceptable plan quality for small problems</li>
   </ul>
 </li>
-<li><strong>Breadth-First Search</strong> (When optimality is critical)
+<li><strong>Breadth-First Search</strong>
   <ul>
-  <li>Guarantees optimal solution</li>
-  <li>Acceptable runtime for small problems</li>
-  <li>Predictable memory usage</li>
+  <li>Guaranteed optimal solution on small domains</li>
+  <li>Predictable search behavior for real-time evaluation</li>
   </ul>
 </li>
 </ol>
 
-<p><strong>Rationale:</strong> In restricted domains, h_unmet_goals heuristic is highly accurate. No significant advantage from expensive planning graph computation. Simple greedy approach provides best real-time performance.</p>
+<p><strong>Rationale:</strong> With a small action set, the simple heuristic already performs well, and the cost of planning graph computation is not justified.</p>
 
 <h3>Question 2: Very Large Domains (e.g., UPS Routing)</h3>
 
 <p><strong>Recommended Algorithms:</strong></p>
 <ol>
-<li><strong>Greedy Best-First Search with h_unmet_goals</strong> (Primary choice)
+<li><strong>Greedy Best-First Search with <code>h_unmet_goals</code></strong>
   <ul>
-  <li>Linear scaling with domain size</li>
-  <li>Negligible preprocessing cost</li>
-  <li>Orders of magnitude faster than uninformed methods</li>
+  <li>Fastest growth in runtime</li>
+  <li>Minimal preprocessing and easy scaling</li>
   </ul>
 </li>
-<li><strong>Depth-First Search with pruning</strong> (Memory-constrained environments)
+<li><strong>Depth-First Search with pruning</strong>
   <ul>
-  <li>Minimal memory footprint</li>
-  <li>Can explore large state spaces</li>
-  <li>Requires additional pruning heuristics to avoid suboptimal solutions</li>
+  <li>Low memory usage</li>
+  <li>Use only when approximate solutions are acceptable</li>
   </ul>
 </li>
-<li><strong>Hierarchical or Decomposition Methods</strong> (Beyond scope of current system)
+<li><strong>Domain-specific or hierarchical planning</strong>
   <ul>
-  <li>Break large problems into sub-goals</li>
-  <li>Solve independently and compose solutions</li>
-  <li>More suitable for massive-scale problems</li>
+  <li>Better suited for very large industrial problems</li>
   </ul>
 </li>
 </ol>
 
-<p><strong>Rationale:</strong> Planning graph heuristics become computationally prohibitive at scale. Simple greedy heuristics scale much better than complex analysis. For UPS-scale problems, domain-specific heuristics would be necessary.</p>
+<p><strong>Rationale:</strong> Planning graph A* heuristics become too expensive on larger problems, and uninformed search is not scalable. A simple heuristic provides the best practical tradeoff.</p>
 
 <h3>Question 3: Finding Optimal Plans</h3>
 
 <p><strong>Recommended Algorithms:</strong></p>
 <ol>
-<li><strong>A* Search with h_pg_maxlevel</strong> (Optimal guarantee)
+<li><strong>A* Search with admissible planning graph heuristics</strong>
   <ul>
-  <li>Admissible heuristic ensures optimality</li>
-  <li>Combines informed search with guarantee</li>
-  <li>Practical for small to medium problems</li>
+  <li><code>h_pg_maxlevel</code> and <code>h_pg_setlevel</code> are theoretically admissible</li>
+  <li>Guarantee optimality when they can be computed</li>
   </ul>
 </li>
-<li><strong>Uniform Cost Search</strong> (When heuristic development is difficult)
+<li><strong>Uniform Cost Search</strong>
   <ul>
-  <li>Simple to implement</li>
-  <li>Guarantees optimal solution</li>
-  <li>Acceptable for problems where action costs vary significantly</li>
+  <li>Reliable and optimal without heuristic design</li>
   </ul>
 </li>
-<li><strong>Branch and Bound with Greedy Heuristic</strong> (Resource-bounded optimality)
+<li><strong>Greedy search with strong heuristic</strong>
   <ul>
-  <li>Use greedy solution as initial bound</li>
-  <li>Systematically search for improvements</li>
-  <li>Better than pure UCS for some domains</li>
+  <li>Useful when fast approximate solutions are preferred</li>
   </ul>
 </li>
 </ol>
 
-<p><strong>Rationale:</strong> Only uninformed methods and A* with admissible heuristics guarantee optimality. Planning graph heuristics are admissible but computationally expensive. h_unmet_goals is not admissible but provides good practical solutions. Trade-off between optimality guarantee and computational cost depends on application.</p>
+<p><strong>Rationale:</strong> Optimal planning requires search methods with admissible heuristics or cost-based expansion. Planning graph heuristics can provide better guidance, but at the cost of computation time.</p>
 
 <h2>Conclusion</h2>
 
-<p>This project demonstrates that simple, efficient heuristics often outperform complex, theoretically superior approaches when practical computation time is considered. The planning graph heuristics implemented are theoretically interesting but computationally expensive for real-world applications. For the air cargo domain:</p>
+<p>This project shows that the best practical solution is often a simple heuristic search. Greedy Best-First Search with <code>h_unmet_goals</code> provides the best runtime across four problems, while planning graph heuristics are useful for reducing search but are often too expensive for larger domains.</p>
 
 <ul>
-<li><strong>Best overall:</strong> Greedy Best-First Search with h_unmet_goals</li>
-<li><strong>Most practical for guaranteed optimality:</strong> A* with h_pg_maxlevel (for small problems)</li>
+<li><strong>Best overall:</strong> Greedy Best-First Search with <code>h_unmet_goals</code></li>
+<li><strong>Best for optimality:</strong> A* with admissible planning graph heuristics on small problems</li>
 <li><strong>Most scalable:</strong> Greedy search with simple heuristics</li>
 </ul>
 
-<p>The implementation successfully validates classical AI planning theory while revealing important practical limitations of complex heuristics.</p>
-
 </body>
-</html>
 </html>
